@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>大事件-后台登录页</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+	</head>
+
+	<body>
+		<div class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">错误提示</h4>
+					</div>
+					<div class="modal-body">
+						<p id="pResult"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		<div class="main_wrap">
+			<div class="header">
+				<a href="#" class="logo"><img src="images/logo.png" alt="" /></a>
+				<div class="copyright">CopyRight © 2019 深圳百秀信息技术股份有限公司<br />All Rights Reserved</div>
+			</div>
+
+			<div class="login_form_con">
+				<div class="login_title"></div>
+				<form class="login_form" id="loginForm">
+					<i class="iconfont icon-user"></i>
+					<i class="iconfont icon-key"></i>
+					<input id="userName" name="user_name" type="text" class="input_txt" placeholder="邮箱/手机号" />
+					<input id="password" name="password" type="password" class="input_pass" placeholder="密码" />
+					<!-- <input type="submit" class="input_sub" value="登 录"> -->
+					<button id="btnLogin" type="button" class="input_sub">登 录</button>
+				</form>
+			</div>
+		</div>
+
+		<script src="./js/lib/jquery-1.12.4.min.js"></script>
+		<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+		<!--<script src="./js/utils/config.js"></script>
+    <script src="./js/utils/user.js"></script> -->
+<script src="js/utils/config_副本.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/user_副本.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			// 思路
+			// 给按钮添加点击事件
+			// 1. 收集用户的信息，进行简单的判断
+			// 2. ajax请求
+			// 3. 根据结果给反馈
+
+			// $('#btnLogin').click(function() {
+			//   var userName = $('#userName').val();
+			//   var password = $('#password').val();
+			//   console.log(userName, password);
+			//   if (userName === '' || password === '') {
+			//     $('#pResult').html('用户名和密码不能为空！');
+			//     $('.modal').modal('show');
+			//     //   alert('心太大了');
+			//   } else {
+			//     user.login(userName, password, function(res) {
+			//       console.log(res);
+			//       if (res.code === 200) {
+			//         //   alert('ok');
+			//         window.location.href = './index.html';
+			//       } else {
+			//         //   alert(res.msg);
+			//         $('#pResult').html(res.msg);
+			//         $('.modal').modal('show');
+			//       }
+			//     });
+			//   }
+			// });
+
+			$('#btnLogin').click(function() {
+				//        var loginData =new FormData(document.getElementById('loginForm'));
+				//        console.log(loginData);
+				var user_name = $('#userName').val();
+				var password = $('#password').val();
+				if(user_name == '' || password == '') {
+					$('#pResult').html('用户名密码不能为空');
+					$('.modal').modal('show');
+				} else {
+					user.login(user_name,password,function(res) {
+						//        		console.log(res);
+						if(res.code == '400') {
+							$('#pResult').html(res.msg);
+							$('.modal').modal('show');
+						} else if(res.code == '200') {
+							window.location.href = './index.html';
+						}
+
+					})
+				}
+			});
+		</script>
+	</body>
+
+</html>
