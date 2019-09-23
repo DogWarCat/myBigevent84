@@ -166,7 +166,7 @@
 //    });
 $(function(){
 	user.getInfo(function(res){
-		console.log(res);
+//		console.log(res);
 		if(res.code == '200'){
 			$('#userName').html(res.data.nickname);
 			$('#userImg').attr('src',res.data.user_pic);

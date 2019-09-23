@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <link type="text/css" rel="stylesheet" href="js/jedate/css/jedate.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/lib/jquery-1.12.4.min.js"></script>
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
@@ -39,12 +39,8 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                        <select class="form-control" id='release_sel'>
+                           
                         </select>
                     </div>
                 </div>
@@ -81,5 +77,25 @@
     </div>
 
 </body>
-
+<script src="js/utils/config_副本.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/category.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/lib/template-web.js" type="text/javascript" charset="utf-8"></script>
+<script id="release_selHtml" type="text/html">
+	{{each data item inx}}
+	 <option value='{{item.id}}'>{{item.name}}</option>
+	{{/each}}
+</script>
+<script type="text/javascript">
+	function selectOption(){
+		category.show(function(res){
+			$('#release_sel').html(template('release_selHtml',res));
+		});
+	}
+	$(function(){
+		selectOption();
+	});
+	$('#release_sel').on('click',function(){
+		console.log($(this).val());
+	});
+</script>
 </html>

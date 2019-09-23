@@ -1,3 +1,29 @@
 var category={
-   
+   show:function(callback){
+        $.get(URL_LIST.category_search,function(res){
+            callback(res);
+        });
+   },
+   addAticle:function(name,slug,callback){
+   	$.post(URL_LIST.category_add,{
+   		name:name,
+   		slug:slug
+   	},function(res){
+   		callback(res);
+   	})
+   },
+   editAticle:function(id,name,slug,callback){
+   	$.post(URL_LIST.category_edit,{
+   		id:id,
+   		name:name,
+   		slug:slug
+   	},function(res){
+   		callback(res);
+   	});
+   },
+   delArticle:function(id,callback){
+   		$.post(URL_LIST.category_delete,{id:id},function(res){
+   			callback(res);
+   		});
+   }
 }

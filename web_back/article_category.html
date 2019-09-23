@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/lib/jquery-1.12.4.min.js"></script>
     <script src="js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
@@ -29,50 +29,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>未分类</td>
-                        <td>uncategorized</td>
-                        <td class="text-center">
-                            <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});"
-                                class="btn btn-info btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 1 );" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
+                    
+                    
 
-                    <tr>
-                        <td>奇趣事</td>
-                        <td>funny</td>
-                        <td class="text-center">
-                            <a href="javascript:editTr({&quot;id&quot;:&quot;2&quot;,&quot;slug&quot;:&quot;funny&quot;,&quot;name&quot;:&quot;奇趣事&quot;});"
-                                class="btn btn-info btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 2 );" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>会生活</td>
-                        <td>living</td>
-                        <td class="text-center">
-                            <a href="javascript:editTr({&quot;id&quot;:&quot;3&quot;,&quot;slug&quot;:&quot;living&quot;,&quot;name&quot;:&quot;会生活&quot;});"
-                                class="btn btn-info btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 3 );" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>爱旅行</td>
-                        <td>travel</td>
-                        <td class="text-center">
-                            <a href="javascript:editTr({&quot;id&quot;:&quot;4&quot;,&quot;slug&quot;:&quot;travel&quot;,&quot;name&quot;:&quot;爱旅行&quot;});"
-                                class="btn btn-info btn-xs">编辑</a>
-                            <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal">新增分类</a>
+                            <a href="#" class="btn btn-success" id='addBtn' data-toggle="modal" data-target="#addModal">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -90,13 +54,15 @@
             <div class="modal-body">
               <form>
                 <div class="form-group">
-                  <label for="recipient-name" class="control-label">分类名称:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                  <label for="category_name" class="control-label">分类名称:</label>
+                  <input type="text" class="form-control" id="category_name">
                 </div>
                 <div class="form-group">
-                  <label for="message-text" class="control-label">分类别名:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                  <label for="category_slug" class="control-label">分类别名:</label>
+                  <input type="text" class="form-control" id="category_slug">
+                  <input type="hidden" class="form-control" id="category_id">
                 </div>
+                <div class="alert alert-danger" role="alert" id="divResult"></div>
               </form>
             </div>
             <div class="modal-footer">
@@ -106,29 +72,139 @@
           </div>
         </div>
       </div>
-
+      <script src="js/utils/config_副本.js"></script>
+      <script src="js/utils/category.js"></script>
+      <script id='categoryTr' type="text/html">
+      	{{each data item}}
+      				<tr>
+                        <td>{{item.name}}</td>
+                        <td>{{item.slug}}</td>
+                        <td class="text-center">
+                            <a href="javascript:editBtn({{item}});"
+                                class="btn btn-info btn-xs">编辑</a>
+                            <a href="javascript:;" class="btn btn-danger btn-xs" article_id='{{item.id}}'>删除</a>
+                        </td>
+                    </tr>
+      	{{/each}}
+      </script>
+      <script src="js/lib/template-web.js"></script>
       <script>
-          $('#addModal').modal({
-            show:false,
-            backdrop:false
-          });
+//    $('#addModal').modal({
+//      show: false,
+//      backdrop: false
+//    });
 
-          $('#model_shutoff').click(function(){
-            alert('shutoff');
-            $('#addModal').modal('hide');
-          });
+      $('#model_shutoff').click(function() {
+        $('#addModal').modal('hide');
+      });
 
+      // $('#model_add').click(function() {
+      //   alert('add');
+      //   $('#addModal').modal('hide');
+      // });
+
+      // $('.category_table').delegate('a', 'click', function() {
+      //   if ($(this).hasClass('btn-info')) {
+      //     $('#addModal .modal-title').html('修改分类名称');
+      //     $('#addModal').modal('show');
+      //   }
+      // });
+    </script>
+      <script>
+          //查询并显示
+          	function doQuery(){
+          		category.show(function(res){
+//                console.log(res);
+                  	$('tbody').html(template('categoryTr',res));
+              });
+          	}
+          $(function(){
+              doQuery();
+          })
+          //新增文章类别
+          function addAticle(){
+          	var name=$('#category_name').val();
+          	var slug=$('#category_slug').val();
+          	category.addAticle(name,slug,function(res){
+//        		console.log(res);
+//        		alert(res.msg);
+          		if (res.code == '200') {
+          			$('#addModal').modal('hide');
+          			$('#divResult').hide();
+          		} else if(res.code == '400'){
+//        			$('#category_name').val('');
+//       			 $('#category_slug').val('');
+					$('#divResult').show().text(res.msg);
+          		}
+          		
+          	});
+          }
+          //编辑文章类别
+          function editAticle(){
+          	var name=$('#category_name').val();
+          	var slug=$('#category_slug').val();
+          	var id=$('#category_id').val();
+          	console.log(id);
+          	category.editAticle(id,name,slug,function(res){
+          		console.log(res);
+          		if (res.code == '200') {
+          			$('#addModal').modal('hide');
+          			$('#divResult').hide();
+//        			alert(res.msg);
+          		}else if(res.code == '400'){
+          			$('#divResult').show().text(res.msg);
+          		}
+          		
+          	})
+          }
+          //新增分类按钮事件
+          $('#addBtn').click(function(){
+          	$('#divResult').hide();
+          	//jQuery中，事件的绑定是叠加式，而不是很多人想象的覆盖式。
+          	//此处用的是click注册事件，所以模态框可以用属性控制显示而不会覆盖当前点击事件
+          	$('.modal-header .modal-title').text('新增分类');
+          	$('#model_add').text('新增').attr('status','1');//1---新增
+          });
+          //编辑按钮点击事件
+          function editBtn(obj){
+          	$('#divResult').hide();
+          	//此处若用模态框的属性控制显示的话，可能会覆盖当前点击事件
+          	$('#addModal').modal('show');
+          	$('.modal-header .modal-title').text('修改类型');
+          	$('#model_add').text('保存修改').attr('status','2');//1---新增
+//        	alert(1);
+          	$('#category_name').val(obj.name);
+          	$('#category_slug').val(obj.slug);
+          	$('#category_id').val(obj.id);
+          }
+          
+          //模态框--新增按钮/保存修改按钮 点击事件
           $('#model_add').click(function(){
-            alert('add');
-            $('#addModal').modal('hide');
+          	var status=$('#model_add').attr('status');
+//        	alert(status);
+          	if (status == '1') {
+	          	addAticle();
+	          	doQuery();
+          	} else if(status == '2'){
+          		editAticle();
+          		doQuery();
+          	}
+          	
           });
-
-          $('.category_table').delegate('a','click',function(){
-              if($(this).hasClass('btn-info')){
-                $('#addModal .modal-title').html('修改分类名称');
-                $('#addModal').modal('show');
-              }
-          })      
+          //删除按钮
+          $('tbody').on('click','tr td a:last-of-type',function delArticle(){
+          	var article_id=$(this).attr('article_id');
+//        	console.log(article_id);
+          	category.delArticle(article_id,function(res){
+          		if (res.code == '200') {
+          			alert(res.msg);
+          			doQuery();
+          		} else{
+          			alert(res.msg);
+          		}
+          	});
+          });
+          
       </script>
 
 </body>
