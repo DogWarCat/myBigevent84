@@ -119,7 +119,9 @@
               });
           	}
           $(function(){
+          	console.time('计时器');
               doQuery();
+              console.timeEnd('计时器');
           })
           //新增文章类别
           function addAticle(){
@@ -191,6 +193,7 @@
           	}
           	
           });
+//        console.profile('性能分析');
           //删除按钮
           $('tbody').on('click','tr td a:last-of-type',function delArticle(){
           	var article_id=$(this).attr('article_id');
@@ -204,7 +207,7 @@
           		}
           	});
           });
-          
+//        console.profileEnd();
       </script>
 
 </body>

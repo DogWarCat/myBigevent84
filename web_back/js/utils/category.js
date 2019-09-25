@@ -1,8 +1,11 @@
 var category={
    show:function(callback){
+   	//设置ajax异步
+	//$.ajaxSettings.async = false;
         $.get(URL_LIST.category_search,function(res){
             callback(res);
         });
+	//$.ajaxSettings.async = true;
    },
    addAticle:function(name,slug,callback){
    	$.post(URL_LIST.category_add,{
