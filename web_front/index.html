@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>大事件-首页</title>
+    <script src="js/lib/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -55,27 +56,8 @@
 
     <div class="main_con clearfix">
         <div class="left_con">
-            <ul class="focus_list">
-                <li class="first">
-                    <a href="#"><img src="images/pic01.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic02.jpg" alt=""></a>
-                    <p>图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic03.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic05.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
-                <li>
-                    <a href="#"><img src="images/pic06.jpg" alt=""></a>
-                    <p>图片说明</p>
-                </li>
+            <ul class="focus_list" id="focus_list">
+                
             </ul>
 
             <div class="common_title">
@@ -222,5 +204,35 @@
     </div>
 
 </body>
-
+<script src="js/utils/config_副本.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/article.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/lib/template-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id='focusList'>
+	{{each data item inx}}
+			{{if inx == 0}}
+					 <li class="first">
+		                    <a href="article.html?id={{item.id}}"><img src="{{item.cover}}" alt=""></a>
+		                    <p>图片说明</p>
+				     </li>
+			{{else}}
+					<li>
+		                    <a href="article.html?id={{item.id}}"><img src="{{item.cover}}" alt=""></a>
+		                    <p>图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明图片说明</p>
+                	</li>
+	{{/if}}
+				
+	{{/each}}
+</script>
+<script type="text/javascript">
+	$(function(){
+		function showImg(){
+			article.show({perpage:5},function(res){
+				console.log(res);
+				var templateStr=template('focusList',res);
+				$('#focus_list').html(templateStr);
+			});
+		}
+		showImg();
+	});
+</script>
 </html>

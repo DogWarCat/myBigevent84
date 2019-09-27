@@ -23,38 +23,34 @@
             文章编辑
         </div>
         <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
+            <form class="form-horizontal article_form" id='editForm'>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
+                    <label for="title" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control" id="title" name="title" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
+                    <label for="cover" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <img src="" class="article_cover" id='imgCover'>
+                        <input type="file" id="cover" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
+                    <label for="type" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
-                            <option>类别二</option>
-                            <option>类别三</option>
-                            <option selected>类别四</option>
-                            <option>类别五</option>
+                        <select class="form-control" name="type" id='type'>
+                            
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
+                    <label for="date" class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control" value="2019-05-17" id="dateinput" name="date">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -64,14 +60,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+                    <label for="content" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="button" class="btn btn-success" id='modify'>修改</button>
                     </div>
                 </div>
             </form>
@@ -79,5 +75,79 @@
     </div>
 
 </body>
-
+<script src="js/utils/config_副本.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/article.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/category.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/getUrlParam.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/lib/template-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/htnl" id='categorySel'>
+	{{each data item}}
+	<option value="{{item.id}}">{{item.name}}</option>
+	{{/each}}
+</script>
+<script type="text/javascript">
+//	alert(window.location.search);
+	$(function(){
+		var id=formatId();
+		//获取文章类别下拉框option
+		function categorySelOpt(){
+			category.show(function(res){
+//				console.log(res);
+				var tempStr=template('categorySel',res);
+				$('#type').html(tempStr);
+			});
+		}
+		categorySelOpt();
+		//获取需要编辑的文章信息
+		 function editEarn(){
+//		    console.log(urlObj['id']);//或者urlObj.id
+			
+			if(isNaN(id)){
+				alert('id不对');
+				return;
+			}else{
+				article.show({id:id},function(res){
+			 		console.log(res);
+			 		var data=res.data;
+			 		$('#title').val(data.title);
+			 		$('#type').val(data.type);
+			 		$('#imgCover').attr('src',data.cover);
+			 		console.log(data.date);
+			 		$('#dateinput').val(data.date);
+//			 		$('#rich_content').val(data.content);
+					setTimeout(function(){
+						tinyMCE.activeEditor.setContent(data.content);
+					},500);
+		 		});
+			}
+		 	
+		 }
+		editEarn();
+		//编辑文章
+		function editArticle(){
+			var editForm=new FormData($('#editForm')[0]);
+//			var type=$('#type').val();{id:urlObj.id,type:type}
+//			console.log(id);
+			editForm.append('id',parseInt(id));
+			editForm.set('content',tinyMCE.activeEditor.getContent());
+			console.log('date'+editForm.get('date'));
+			article.edit(editForm,function(res){
+				if (res.code === 200) {
+					window.location.href='article_list.html';
+				} else{
+					alert.log(res);
+				}
+				
+			});
+		}
+		 $('#modify').click(function(){
+		 	editArticle();
+		 });
+		 
+		 //点击修改图片展示效果
+		 $('#cover').change(function(){
+		 	$('#imgCover').attr('src',window.URL.createObjectURL(this.files[0]));//或者$(this)[0].files[0]
+		 });
+	});
+</script>
 </html>

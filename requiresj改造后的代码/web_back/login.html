@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>大事件-后台登录页</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+  </head>
+
+  <body>
+    <div class="main_wrap">
+      <div class="header">
+        <a href="#" class="logo"><img src="images/logo.png" alt=""/></a>
+        <div class="copyright">CopyRight © 2019 深圳百秀信息技术股份有限公司<br />All Rights Reserved</div>
+      </div>
+
+      <div class="login_form_con">
+        <div class="login_title"></div>
+        <form class="login_form">
+          <i class="iconfont icon-user"></i>
+          <i class="iconfont icon-key"></i>
+          <input id="userName" type="text" class="input_txt" placeholder="邮箱/手机号" />
+          <input id="password" type="password" class="input_pass" placeholder="密码" />
+          <button type="button" class="input_sub" id="btnLogin">登 录</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">错误提示</h4>
+          </div>
+          <div class="modal-body">
+            <p id="pResult"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <script src="./js/lib/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./js/utils/config.js"></script>
+    <script src="./js/utils/user.js"></script>
+
+    <script>
+      //   给btn添加点击事件
+      $('#btnLogin').click(function() {
+        // 获取用户信息；
+        // 简单判断一下；
+        // 发ajax请求
+        var userName = $('#userName').val();
+        var password = $('#password').val();
+
+        if (userName === '' || password === '') {
+          $('#pResult').text('用户名和密码不能为空！');
+          $('.modal').modal('show');
+          //   alert('心太大了！！！');
+          return;
+        }
+        // console.log(userName, password);
+        //用户登陆
+        // $.post(
+        //   'http://localhost:8000/admin/login',
+        //   {
+        //     user_name: userName,
+        //     password: password
+        //   },
+        //   function(res) {
+        //     // res就是响应体。是由$.post这个方法决定的。
+        //     if (res.code == 200) {
+        //       // 页面跳转
+        //       window.location.href = './index.html';
+        //     } else {
+        //       $('#pResult').text(res.msg);
+        //       $('.modal').modal('show');
+        //     }
+        //   }
+        // );
+
+        user.login(userName, password, function(res) {
+          // alert(1);
+          // console.log(res);
+          if (res.code == 200) {
+            // 页面跳转
+            window.location.href = './index.html';
+          } else {
+            $('#pResult').text(res.msg);
+            $('.modal').modal('show');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

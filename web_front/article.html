@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>大事件-文章</title>
+    <script src="js/lib/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -58,10 +59,10 @@
             <div class="breadcrumb">
                 当前位置： <a href="#">首页</a> &gt; <a href="#">科技</a> &gt; 文章详情
             </div>
-            <h3 class="article_title">马斯克的新花样？连接人脑和电脑的初创公司又筹了一笔钱</h3>
-            <div class="article_info">杰克 发布于 2019-05-08 07:08:46&nbsp;&nbsp;&nbsp;分类: 奇趣事&nbsp;&nbsp;&nbsp;阅读:
+            <h3 class="article_title" id='title'>马斯克的新花样？连接人脑和电脑的初创公司又筹了一笔钱</h3>
+            <div class="article_info"><span id='author'></span> 发布于 <span id='date'>2019-05-08 07:08:46</span>&nbsp;&nbsp;&nbsp;分类: <span id='type'></span>&nbsp;&nbsp;&nbsp;阅读:
                 (98)&nbsp;&nbsp;&nbsp;评论: (0)</div>
-            <div class="article_con">
+            <div class="article_con" id="content">
 
                 <p>“上天入地”还不够？硅谷“钢铁侠”马斯克名下一家低调的公司最近又融了一大笔钱。</p>
 
@@ -80,25 +81,25 @@
                 下一篇： <a href="#">世界第一个可以玩游戏的马桶、世界上第一个可以玩游戏的茶杯</a>
             </div>
 
-            <form action="" class="comment_form">
+            <form action="" class="comment_form" id="commentForm">
                 <div class="form_group">
                     <label>用户名：</label>
-                    <input type="text" placeholder="请输入用户名" class="comment_name">
+                    <input type="text" placeholder="请输入用户名" class="comment_name" name="name" id="name">
                 </div>
                 <div class="form_group">
                     <label>评论内容：</label>
-                    <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
+                    <textarea placeholder="请发表您的评论" class="comment_input" name="content" id="contentText"></textarea>
                 </div>
                 <div class="form_group">
-                    <input type="submit" name="" value="评 论" class="comment_sub"></div>
+                    <input type="button" name="" value="评 论" class="comment_sub" id="submitComment"></div>
             </form>
 
             <div class="comment_count">
                 4条评论
             </div>
 
-            <div class="comment_list_con">
-                <div class="comment_detail_list">
+            <div class="comment_list_con" id="comment">
+                <!--<div class="comment_detail_list">
                     <div class="person_pic fl">乔</div>
                     <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
                     <div class="comment_text fl">
@@ -125,7 +126,7 @@
                     <div class="comment_text fl">
                         遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
         <div class="right_con setfl">
@@ -206,5 +207,98 @@
     </div>
 
 </body>
-
+<script src="js/utils/config_副本.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/article.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/category.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/comment.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/utils/getUrlParam.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/lib/template-web.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/html" id='templateComment'>
+	{{each data item}}
+			<div class="comment_detail_list">
+                    <div class="person_pic fl">{{item.name.substr(0,1)}}</div>
+                    <div class="name_time fl"><b>{{item.name}}</b><span>{{formatDt(item.dt)}}前</span></div>
+                    <div class="comment_text fl">
+                        {{item.content}}
+                    </div>
+                </div>
+	{{/each}}
+</script>
+<script type="text/javascript">
+	$(function(){
+		var id=formatId();
+		//显示文章
+		function showArticle(){
+			
+//			console.log(id);
+			article.show({id:id},function(res){
+//				console.log(res);
+				$('#title').text(res.data.title);
+				$('#author').text(res.data.author);
+				$('#date').text(res.data.date);
+				var type=res.data.type;
+				category.show(function(res){
+//					console.log(res);
+					res.data.forEach(function(item){
+						if(item.id == type){
+							$('#type').text(item.name);
+						}
+					});
+				});
+				$('#content').html(res.data.content);
+			});
+		}
+		showArticle();
+		
+		//显示评论
+		function showComment(){
+			console.log(id);
+			comment.search(id,function(res){
+				console.log(res);
+				// 告诉 模板引擎 我们将在模板内部使用这个函数
+				template.defaults.imports.formatDt=formatDt;
+				var templateStr=template('templateComment',res);
+				$('#comment').html(templateStr);
+			});
+		}
+		//格式化距离现在多长时间
+		function formatDt(dt){
+			var nap = Math.floor((Date.now()-dt)/1000);
+			var day=Math.floor(nap/(24*60*60)); //天
+			var hour=Math.floor((nap - day*(24*60*60))/(60*60));
+			var min=Math.floor((nap-day*(24*60*60)-hour*(60*60))/60);
+			var str='';
+			if(day>0){
+				str+=day+'天';
+			}
+			if(hour>0){
+				str+=hour+'小时';
+			}
+			if(min>0){
+				str+=min+'分';
+			}
+			return str;
+		}
+		showComment();
+		//添加评论
+		function addCommnet(){
+//			var commentForm=new FormData($('#commentForm')[0]);
+//			commentForm.append('id',id);
+			var name=$('#name').val();
+			var content=$('#contentText').val();//textarea也用val()取值
+			console.log(content);
+			comment.add({name:name,content:content,article_id:id},function(res){
+				if (res.code === 200) {
+					console.log(res);
+				} else{
+					console.log(res);
+				}
+				
+			});
+		}
+		$('#submitComment').click(function(){
+			addCommnet();
+		});
+	});
+</script>
 </html>

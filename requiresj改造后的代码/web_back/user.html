@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>用户信息修改</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/iconfont.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="js/lib/jquery-1.12.4.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="common_title">
+        用户信息修改
+      </div>
+      <div class="container-fluid common_con">
+        <form class="form-horizontal article_form" id="myform">
+          <div class="form-group">
+            <label for="userName" class="col-sm-2 control-label">用户名称：</label>
+            <div class="col-sm-4">
+              <input type="text" name="username" class="form-control" id="userName" value="李思思" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="userNickname" class="col-sm-2 control-label">昵称：</label>
+            <div class="col-sm-4">
+              <input type="text" name="nickname" class="form-control" id="userNickname" value="思思" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="userEmail" class="col-sm-2 control-label">邮箱：</label>
+            <div class="col-sm-4">
+              <input type="text" name="email" class="form-control" id="userEmail" value="lisisi@126.com" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+            <div class="col-sm-10">
+              <img id="previewImg" src="images/2.jpg" alt="" class="user_pic" />
+              <input type="file" id="user_pic" name="user_pic" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="userPassword" class="col-sm-2 control-label">密码：</label>
+            <div class="col-sm-4">
+              <input type="password" name="password" class="form-control" id="userPassword" value="12345678" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="button" id="btnSave" class="btn btn-success">修改</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="./js/utils/config.js"></script>
+    <script src="./js/utils/user.js"></script>
+    <script>
+      user.getInfo(function(res) {
+        console.log(res);
+        if (res.code === 200) {
+          // 显示数据
+          $('#userName').val(res.data.nickname);
+        }
+      });
+
+      $('#btnSave').click(function() {
+        // 使用formData提交
+
+        // FormData(必须是dom对象)
+        var fd = new FormData($('#myform')[0]);
+
+        user.editInfo(fd, function(res) {
+          if (res.code === 200) {
+            alert(1);
+          }
+        });
+      });
+
+      // 图片本地预览
+      $('#user_pic').change(function() {
+        console.dir(this);
+        var file = this.files[0];
+        if (file) {
+          // 创建一个临时的url
+          var tmpFilePath = URL.createObjectURL(file);
+          console.log(tmpFilePath);
+
+          // 显示在img
+          $('#previewImg').attr('src', tmpFilePath);
+        } else {
+          //  放一个默认图片：表示没有选中
+          $('#previewImg').attr('src', './images/2.jpg');
+        }
+      });
+    </script>
+  </body>
+</html>
